@@ -7,9 +7,9 @@ export default function HomePage() {
       <HomeHero />
 
       <PageStory
-        problem="Busy days turn small timeouts into retry storms - customers wait, and servers pay for wasted calls."
-        whatYouSee="A branded ARIS demo: same checkout, STATIC vs adaptive policy, order-path and payment-path failures."
-        whoBenefits="Shoppers get calmer checkouts, developers get one retry helper, IT sees fewer wasted calls with clear fallbacks."
+        problem="On busy days, apps keep retrying the same failing call. People wait, and servers get hammered for no reason."
+        whatYouSee="Same checkout twice, Once with fixed STATIC rules, once with ARIS. You can pretend the payment desk or the shop is in trouble."
+        whoBenefits="Shoppers wait less. Developers manage retries in one place. IT Management wastes fewer calls and keeps an emergency STATIC switch."
       />
 
       <section className="home-section">

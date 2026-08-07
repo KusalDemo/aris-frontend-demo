@@ -24,7 +24,7 @@ export function LastArisDecision() {
       <h2 className="panel-title">Last ARIS decision</h2>
       {policy !== "ARIS" && empty ? (
         <p className="panel-hint">
-          Switch policy to <strong>ARIS</strong> and run a checkout. Decision
+          Switch policy to <strong>ARIS</strong> and run a checkout. These
           fields come from <code>GET /api/demo/stats</code> (
           <code>lastArisDecision</code>).
         </p>
@@ -60,7 +60,7 @@ export function LastArisDecision() {
       )}
       <p className="panel-hint" style={{ marginTop: "0.75rem" }}>
         Rule of thumb in this demo: <code>maxAttempts = retry + 1</code> (STATIC
-        default retry=2 → up to 3 tries).
+        default retry=3 → up to 4 tries).
       </p>
     </div>
   );
@@ -72,7 +72,7 @@ export function IntegrationExplainer() {
       <h2 className="panel-title">How integration works</h2>
       <p>
         Business code stays simple: Java asks <strong>ARIS</strong> for retry /
-        backoff / timeout, then applies those dials on the outbound call (here:
+        wait / timeout, then applies those dials on the outbound call (here:
         order → payment).
       </p>
       <pre className="code-block">{`// One helper — not a copy-pasted retry loop per service
@@ -81,20 +81,21 @@ paymentClient.charge(request, d.retry, d.backoff, d.timeoutMs);`}</pre>
       <h3 className="subhead">STATIC vs ARIS (developer view)</h3>
       <ul className="plain-list">
         <li>
-          <strong>STATIC:</strong> fixed defaults every time (retry=2,
-          backoff≈1.5, timeout≈1000ms), no decision object stored.
+          <strong>STATIC:</strong> fixed defaults every time (retry=3,
+          backoff≈1.5, timeout≈2000ms), no decision object stored.
         </li>
         <li>
           <strong>ARIS:</strong> one decide call → live dials appear in{" "}
-          <code>lastArisDecision</code>; business code path stays the same helper.
+          <code>lastArisDecision</code>; business code path stays the same
+          helper.
         </li>
       </ul>
       <h3 className="subhead">What developers no longer maintain per service</h3>
       <ul className="plain-list">
         <li>Hand-tuned retry counts that drift between teams</li>
-        <li>Ad-hoc sleep/backoff loops duplicated in every client</li>
+        <li>Ad-hoc sleep/wait loops duplicated in every client</li>
         <li>Guessing timeouts without a shared policy view</li>
-        <li>Silent “retry storms” with no approved upper bounds</li>
+        <li>Blind extra knocks with no approved upper bounds</li>
       </ul>
     </div>
   );

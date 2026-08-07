@@ -4,6 +4,7 @@ import { CheckoutResult } from "@/components/checkout/CheckoutResult";
 import { ComparePanel } from "@/components/checkout/ComparePanel";
 import { PlaceOrderForm } from "@/components/checkout/PlaceOrderForm";
 import { RequestTimeline } from "@/components/checkout/RequestTimeline";
+import { RunHistoryTable } from "@/components/checkout/RunHistoryTable";
 import { PageStory } from "@/components/layout/PageStory";
 
 export default function CheckoutPage() {
@@ -12,14 +13,15 @@ export default function CheckoutPage() {
       <p className="page-kicker">Customer demo</p>
       <h1 className="page-title">Checkout</h1>
       <p className="page-lead">
-        Same place-order action. Change Policy and Scenario in the sticky bar to
-        see STATIC fixed rules vs ARIS. Including ORDER and PAYMENT failures.
+        Same place-order button every time. Change Policy and Scenario in the
+        sticky bar to compare STATIC fixed rules with ARIS. Including shop
+        problems and payment problems.
       </p>
 
       <PageStory
-        problem="Customers only see “spinning” or “failed”.. They do not see which dependency broke."
-        whatYouSee="A live order form, big result state, a reconstructed timeline, and a STATIC vs ARIS compare panel."
-        whoBenefits="Normal users feel fewer dead-end checkouts; presenters can show order-path vs payment-path clearly."
+        problem="The customer only sees spinning or “failed”. They never learn where it broke."
+        whatYouSee="An order form, a big result, a step-by-step timeline, a STATIC vs ARIS compare, and a run log table with Good/Bad takeaways."
+        whoBenefits="You can show “the shop broke” vs “payment broke” clearly and how ARIS wastes fewer knocks than STATIC."
       />
 
       <div className="checkout-layout">
@@ -31,6 +33,7 @@ export default function CheckoutPage() {
       </div>
 
       <ComparePanel />
+      <RunHistoryTable />
     </main>
   );
 }

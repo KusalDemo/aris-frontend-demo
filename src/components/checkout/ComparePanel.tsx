@@ -84,8 +84,8 @@ export function ComparePanel() {
     <div className="panel">
       <h2 className="panel-title">Side-by-side compare</h2>
       <p className="panel-hint">
-        Run the same scenario once under STATIC, then under ARIS. Current
-        scenario selector: <strong>{scenario}</strong>
+        Run the same scenario once under STATIC, then under ARIS. Fair
+        side-by-side. Current scenario: <strong>{scenario}</strong>
         {sameScenario
           ? ` — last pair both used ${lastStaticRun.scenario}.`
           : "."}
@@ -93,8 +93,8 @@ export function ComparePanel() {
       {mismatch ? (
         <p className="panel-hint warn">
           Last STATIC run used {lastStaticRun.scenario}; last ARIS run used{" "}
-          {lastArisRun.scenario}. For a fair wow moment, reset or re-run both on
-          the same scenario.
+          {lastArisRun.scenario}. Re-run both on the same scenario for a fair
+          compare.
         </p>
       ) : null}
       <div className="compare-grid">

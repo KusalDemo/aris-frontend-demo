@@ -4,17 +4,17 @@ const BENEFITS = [
   {
     audience: "Normal users",
     title: "Fewer failed checkouts on busy days",
-    body: "When payment or order systems strain, customers see less spinning and fewer dead ends. The same checkout path, calmer under load.",
+    body: "When the shop or payment desk is under stress, shoppers see less endless spinning and fewer dead ends. Same checkout button calmer under load.",
   },
   {
     audience: "Developers",
     title: "One place for retry behaviour",
-    body: "Java asks ARIS for retry, backoff, and timeout, then applies it. Teams stop copying fragile retry loops into every service.",
+    body: "Backend asks ARIS how many times to try again, how long to wait, and how long to wait for an answer. Teams stop copying fragile retry loops into every service.",
   },
   {
     audience: "IT & company leadership",
     title: "Less wasted traffic, clearer control",
-    body: "Adaptive decisions cut useless retries. Approved limits and a STATIC fallback keep automation inside guardrails.",
+    body: "Smarter choices cut useless extra calls. Approved limits and a one-click STATIC fallback keep automation inside clear rules.",
   },
 ] as const;
 
@@ -38,12 +38,13 @@ export function HomeHero() {
       <p className="home-eyebrow">Live product demo</p>
       <h1 className="home-brand">ARIS</h1>
       <p className="home-headline">
-        When checkout gets busy, fixed retry rules waste calls - ARIS adapts
-        retry, backoff, and timeout so the same order path stays calmer.
+        When checkout gets busy, fixed retry rules keep knocking the same way —
+        ARIS chooses how long to wait and whether to try again so the same order
+        path stays calmer.
       </p>
       <p className="home-support">
-        Watch one customer action under STATIC fixed rules versus ARIS adaptive
-        decisions - including failures in the order path and the payment path.
+        Watch one customer place-order under STATIC fixed rules versus ARIS —
+        including problems in the order path and the payment path.
       </p>
       <div className="home-cta-row">
         <Link className="btn btn-primary btn-lg" href="/checkout">

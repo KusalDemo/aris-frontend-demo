@@ -26,14 +26,14 @@ export default function CostPage() {
       <p className="page-kicker">IT / company</p>
       <h1 className="page-title">Cost &amp; load</h1>
       <p className="page-lead">
-        In-memory story from <code>/api/demo/stats</code> plus this browser’s
-        recent runs. Enough to show wasted retries without a billing system.
+        A simple money story from this session’s runs plus server counters
+        enough to show wasted extra calls without a real billing system.
       </p>
 
       <PageStory
-        problem="Fixed retry rules can multiply traffic during incidents and nobody sees the cost in the customer UI."
+        problem="Fixed retry rules make more traffic during problems, and the customer screen never shows the bill."
         whatYouSee="Counters, editable cost dials, and simple charts comparing STATIC vs ARIS for the selected scenario."
-        whoBenefits="IT and leadership get a calm, presentation-ready picture of infra waste and failed-order penalty."
+        whoBenefits="IT and Company management get a calm picture of wasted calls and the cost of failed orders."
       />
 
       <div className="cost-toolbar">

@@ -51,6 +51,7 @@ export interface OrderResponse {
   status: string;
   paymentId: string | null;
   createdAt: string;
+  retriesObserved?: number;
 }
 
 /** Snake_case keys as returned inside lastArisDecision. */
@@ -73,6 +74,7 @@ export interface DemoStatsResponse {
   lastScenario: string;
   lastFailureLocation: FailureLocation | string;
   lastArisDecision: ArisDecision | Record<string, never>;
+  lastRetriesObserved?: number;
 }
 
 export interface ProblemDetail {
