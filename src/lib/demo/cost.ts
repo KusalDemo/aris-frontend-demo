@@ -96,6 +96,7 @@ export function normalizeDemoStats(raw: unknown): DemoStatsResponse {
       decision && typeof decision === "object"
         ? (decision as DemoStatsResponse["lastArisDecision"])
         : {},
+    lastRetriesObserved: num("lastRetriesObserved", "last_retries_observed"),
   };
 }
 

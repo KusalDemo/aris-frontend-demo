@@ -71,6 +71,47 @@ function inferFailureLocation(
   return "NONE";
 }
 
+function readRetriesFromUnknown(raw: unknown): number | null {
+  if (!raw || typeof raw !== "object") return null;
+  const o = raw as Record<string, unknown>;
+  const nested =
+    o.properties && typeof o.properties === "object"
+      ? ((o.properties as Record<string, unknown>).retriesObserved ??
+        (o.properties as Record<string, unknown>).retries_observed)
+      : undefined;
+  const v = o.retriesObserved ?? o.retries_observed ?? nested;
+  if (typeof v === "number" && Number.isFinite(v)) return Math.max(0, Math.floor(v));
+  if (typeof v === "string" && v.trim() !== "" && Number.isFinite(Number(v))) {
+    return Math.max(0, Math.floor(Number(v)));
+  }
+  return null;
+}
+
+export function resolveRetriesObserved(params: {
+  order: OrderResponse | null;
+  error: unknown;
+  beforeStats: DemoStatsResponse;
+  afterStats: DemoStatsResponse;
+}): number {
+  const fromOrder = readRetriesFromUnknown(params.order);
+  if (fromOrder !== null) return fromOrder;
+
+  if (params.error instanceof ApiError) {
+    const fromProblem = readRetriesFromUnknown(params.error.raw);
+    if (fromProblem !== null) return fromProblem;
+  }
+
+  const fromLast = params.afterStats.lastRetriesObserved;
+  if (typeof fromLast === "number" && Number.isFinite(fromLast)) {
+    return Math.max(0, Math.floor(fromLast));
+  }
+
+  return Math.max(
+    0,
+    params.afterStats.retryAttemptsTotal - params.beforeStats.retryAttemptsTotal,
+  );
+}
+
 export function customerFeltCaption(run: DemoRunSummary): string {
   if (run.success) {
     return "What the customer felt: checkout finished — order paid.";
@@ -133,10 +174,12 @@ export async function executeCheckout(params: {
   });
 
   const durationMs = Math.round(performance.now() - started);
-  const retriesObserved = Math.max(
-    0,
-    afterStats.retryAttemptsTotal - beforeStats.retryAttemptsTotal,
-  );
+  const retriesObserved = resolveRetriesObserved({
+    order,
+    error,
+    beforeStats,
+    afterStats,
+  });
   const success = order !== null && !error;
   const failureLocation = success
     ? "NONE"

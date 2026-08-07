@@ -60,7 +60,7 @@ export function LastArisDecision() {
       )}
       <p className="panel-hint" style={{ marginTop: "0.75rem" }}>
         Rule of thumb in this demo: <code>maxAttempts = retry + 1</code> (STATIC
-        default retry=2 → up to 3 tries).
+        default retry=3 → up to 4 tries).
       </p>
     </div>
   );
@@ -81,8 +81,8 @@ paymentClient.charge(request, d.retry, d.backoff, d.timeoutMs);`}</pre>
       <h3 className="subhead">STATIC vs ARIS (developer view)</h3>
       <ul className="plain-list">
         <li>
-          <strong>STATIC:</strong> fixed defaults every time (retry=2,
-          backoff≈1.5, timeout≈1000ms), no decision object stored.
+          <strong>STATIC:</strong> fixed defaults every time (retry=3,
+          backoff≈1.5, timeout≈2000ms), no decision object stored.
         </li>
         <li>
           <strong>ARIS:</strong> one decide call → live dials appear in{" "}

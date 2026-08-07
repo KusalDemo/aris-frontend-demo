@@ -17,7 +17,7 @@ export function ApprovedLimits() {
           <h3>STATIC defaults</h3>
           <p className="panel-hint">
             Known, boring, predictable. Same numbers every busy Tuesday (demo
-            defaults: retry=2, backoff≈1.5, timeout≈1000ms).
+            defaults: retry=3, backoff≈1.5, timeout≈2000ms).
           </p>
         </div>
         <div>
