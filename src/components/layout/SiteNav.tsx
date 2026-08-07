@@ -10,7 +10,6 @@ const LINKS = [
   { href: "/cost", label: "IT / Cost" },
   { href: "/developers", label: "Developers" },
   { href: "/trust", label: "Trust" },
-  { href: "/examiner", label: "Examiner" },
   { href: "/login", label: "Login" },
 ] as const;
 
