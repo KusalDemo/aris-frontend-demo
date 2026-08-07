@@ -13,14 +13,15 @@ export default function DevelopersPage() {
       <p className="page-kicker">Developers</p>
       <h1 className="page-title">How Java asks ARIS</h1>
       <p className="page-lead">
-        Plain words: the service asks ARIS for retry, backoff, and timeout, then
-        applies those dials. Business code stays one helper call.
+        Plain words: the service asks ARIS “how many retries, how long to wait,
+        how long a timeout..?” then uses those answers. Business code stays one
+        helper call.
       </p>
 
       <PageStory
-        problem="Retry logic copied across services drifts and causes retry storms."
-        whatYouSee="An integration sketch plus the last ARIS decision fields from demo stats."
-        whoBenefits="Developers keep one shared policy path instead of per-service guesswork."
+        problem="When every team copies its own retry settings, numbers drift and busy days get messier."
+        whatYouSee="A simple integration sketch plus the last ARIS answers (retry, wait, timeout) from demo stats."
+        whoBenefits="Developers keep one shared policy path instead of guessing per service."
       />
 
       <div className="two-col">

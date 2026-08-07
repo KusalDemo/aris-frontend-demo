@@ -13,14 +13,14 @@ export default function TrustPage() {
       <p className="page-kicker">Company Management</p>
       <h1 className="page-title">Trust &amp; limits</h1>
       <p className="page-lead">
-        ARIS is adaptive inside approved bounds with STATIC as the explicit
-        fallback story when you need calm, boring defaults.
+        ARIS only turns dials inside rules a teacher already approved. STATIC
+        stays the quiet backup when you want boring defaults.
       </p>
 
       <PageStory
-        problem="Company Management fears black-box automation changing production behaviour without guardrails."
-        whatYouSee="Approved-limit metaphor, fail-open explanation and a one-click Switch to STATIC control."
-        whoBenefits="IT and company management get safer automation with a visible manual override."
+        problem="Leaders worry that automatic systems will change production behaviour with no limits."
+        whatYouSee="Approved-limit metaphor, what happens if the advisor is down, and a one-click Switch to STATIC control."
+        whoBenefits="IT and company management get safer automation with a visible panic button."
       />
 
       <div className="two-col">
