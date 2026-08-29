@@ -114,7 +114,7 @@ export function resolveRetriesObserved(params: {
 
 export function customerFeltCaption(run: DemoRunSummary): string {
   if (run.success) {
-    return "What the customer felt: checkout finished — order paid.";
+    return "What the customer felt: checkout finished, order paid.";
   }
   const where =
     run.failureLocation === "ORDER"

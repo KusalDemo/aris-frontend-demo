@@ -198,7 +198,7 @@ export const useDemoStore = create<DemoStoreState>()(
         // Clear server in-memory demo counters while JWT is still valid.
         if (token) {
           void resetDemoStats({ token, quiet: true }).catch(() => {
-            /* ignore — client session still clears below */
+            /* ignore - client session still clears below */
           });
         }
         set({
@@ -323,7 +323,7 @@ export const useDemoStore = create<DemoStoreState>()(
             lastCustomerFelt: result.customerFelt,
             statusMessage: result.run.success
               ? `Paid in ${result.run.durationMs}ms (${policy})`
-              : `Failed in ${result.run.durationMs}ms — ${result.run.failureLocation}`,
+              : `Failed in ${result.run.durationMs}ms - ${result.run.failureLocation}`,
             errorMessage: result.run.success
               ? null
               : result.run.detail || "Checkout failed",

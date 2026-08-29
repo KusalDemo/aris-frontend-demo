@@ -20,7 +20,7 @@ export interface CostBreakdown {
   source: "session";
 }
 
-/** Fixed demo-money format — never use locale currency (avoids SSR hydration mismatch). */
+/** Fixed demo-money format - never use locale currency (avoids SSR hydration mismatch). */
 export function formatDemoMoney(n: number, digits = 4): string {
   const value = Number.isFinite(n) ? n : 0;
   return `$${value.toFixed(digits)}`;

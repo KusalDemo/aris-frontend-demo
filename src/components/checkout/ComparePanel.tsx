@@ -1,18 +1,41 @@
 "use client";
 
-import type { DemoRunSummary } from "@/lib/api/types";
+import { useMemo } from "react";
+import { formatDemoMoney } from "@/lib/demo/cost";
+import {
+  comparisonMeaning,
+  computeSessionComparison,
+  type SessionPolicyComparison,
+} from "@/lib/demo/sessionPerformance";
 import { useDemoStore } from "@/lib/store/demoStore";
 
-function RunSummaryCard({
+function fmtRate(n: number | null): string {
+  if (n === null) return "-";
+  return `${(n * 100).toFixed(0)}%`;
+}
+
+function fmtAvg(n: number | null, digits = 2): string {
+  if (n === null) return "-";
+  return n.toFixed(digits);
+}
+
+function PolicySessionCard({
   title,
-  run,
-  emptyHint,
+  runs,
+  comparison,
+  policy,
 }: {
   title: string;
-  run: DemoRunSummary | null;
-  emptyHint: string;
+  runs: SessionPolicyComparison["staticRuns"];
+  comparison: SessionPolicyComparison;
+  policy: "STATIC" | "ARIS";
 }) {
-  if (!run) {
+  const emptyHint =
+    policy === "STATIC"
+      ? "No STATIC runs in this session yet."
+      : "No ARIS runs in this session yet.";
+
+  if (runs.length === 0) {
     return (
       <div className="compare-card">
         <h3>{title}</h3>
@@ -21,94 +44,120 @@ function RunSummaryCard({
     );
   }
 
+  const successCount = runs.filter((r) => r.success).length;
+  const failCount = runs.length - successCount;
+  const avgRetries =
+    policy === "STATIC"
+      ? comparison.staticAvgRetries
+      : comparison.arisAvgRetries;
+  const avgDuration =
+    policy === "STATIC"
+      ? comparison.staticAvgDurationMs
+      : comparison.arisAvgDurationMs;
+  const extraCalls =
+    policy === "STATIC"
+      ? comparison.staticExtraCalls
+      : comparison.arisExtraCalls;
+  const infraWaste =
+    policy === "STATIC"
+      ? comparison.staticInfraWaste
+      : comparison.arisInfraWaste;
+  const successRate =
+    policy === "STATIC"
+      ? comparison.staticSuccessRate
+      : comparison.arisSuccessRate;
+
+  const tone =
+    failCount === 0 && successCount > 0
+      ? "compare-ok"
+      : successCount === 0
+        ? "compare-fail"
+        : "";
+
   return (
-    <div
-      className={
-        run.success ? "compare-card compare-ok" : "compare-card compare-fail"
-      }
-    >
+    <div className={tone ? `compare-card ${tone}` : "compare-card"}>
       <h3>{title}</h3>
       <dl className="compare-dl">
         <div>
-          <dt>Scenario</dt>
-          <dd>{run.scenario}</dd>
+          <dt>Runs (session)</dt>
+          <dd>{runs.length}</dd>
         </div>
         <div>
-          <dt>Result</dt>
-          <dd>{run.success ? "Success" : "Failed"}</dd>
+          <dt>Success / fail</dt>
+          <dd>
+            {successCount} / {failCount}
+          </dd>
         </div>
         <div>
-          <dt>Retries</dt>
-          <dd>{run.retriesObserved}</dd>
+          <dt>Success rate</dt>
+          <dd>{fmtRate(successRate)}</dd>
         </div>
         <div>
-          <dt>Duration</dt>
-          <dd>{run.durationMs} ms</dd>
+          <dt>Avg retries</dt>
+          <dd>{fmtAvg(avgRetries)}</dd>
         </div>
         <div>
-          <dt>Failure path</dt>
-          <dd>{run.failureLocation ?? "—"}</dd>
+          <dt>Total retries</dt>
+          <dd>{extraCalls}</dd>
         </div>
-        {run.arisDecision && Object.keys(run.arisDecision).length > 0 ? (
-          <div>
-            <dt>ARIS decision</dt>
-            <dd className="mono small">
-              retry={String(run.arisDecision.retry ?? "—")}, backoff=
-              {String(run.arisDecision.backoff_multiplier ?? "—")}, timeout_ms=
-              {String(run.arisDecision.timeout_ms ?? "—")}
-            </dd>
-          </div>
-        ) : null}
+        <div>
+          <dt>Avg duration</dt>
+          <dd>
+            {avgDuration === null ? "-" : `${Math.round(avgDuration)} ms`}
+          </dd>
+        </div>
+        <div>
+          <dt>Extra-call waste (est.)</dt>
+          <dd>{formatDemoMoney(infraWaste)}</dd>
+        </div>
       </dl>
-      {run.detail ? <p className="compare-detail">{run.detail}</p> : null}
     </div>
   );
 }
 
 export function ComparePanel() {
-  const lastStaticRun = useDemoStore((s) => s.lastStaticRun);
-  const lastArisRun = useDemoStore((s) => s.lastArisRun);
-  const scenario = useDemoStore((s) => s.scenario);
+  const hydrated = useDemoStore((s) => s.hydrated);
+  const recentRuns = useDemoStore((s) => s.recentRuns);
+  const costConstants = useDemoStore((s) => s.costConstants);
 
-  const sameScenario =
-    lastStaticRun &&
-    lastArisRun &&
-    lastStaticRun.scenario === lastArisRun.scenario;
+  const comparison = useMemo(() => {
+    const runs = hydrated ? recentRuns : [];
+    return computeSessionComparison(runs, costConstants);
+  }, [hydrated, recentRuns, costConstants]);
 
-  const mismatch =
-    lastStaticRun &&
-    lastArisRun &&
-    lastStaticRun.scenario !== lastArisRun.scenario;
+  const meaning = useMemo(() => comparisonMeaning(comparison), [comparison]);
 
   return (
     <div className="panel">
-      <h2 className="panel-title">Side-by-side compare</h2>
+      <h2 className="panel-title">Side-by-side compare (session totals)</h2>
       <p className="panel-hint">
-        Run the same scenario once under STATIC, then under ARIS. Fair
-        side-by-side. Current scenario: <strong>{scenario}</strong>
-        {sameScenario
-          ? ` — last pair both used ${lastStaticRun.scenario}.`
-          : "."}
+        Every checkout in this browser session, <strong>all scenarios</strong>,
+        split by STATIC vs ARIS. The sticky-bar scenario only affects new runs,
+        not this rollup.
       </p>
-      {mismatch ? (
+      {!comparison.hasPair &&
+      (comparison.staticRuns.length > 0 || comparison.arisRuns.length > 0) ? (
         <p className="panel-hint warn">
-          Last STATIC run used {lastStaticRun.scenario}; last ARIS run used{" "}
-          {lastArisRun.scenario}. Re-run both on the same scenario for a fair
-          compare.
+          Only one policy has runs so far. Add the other arm for a full compare.
         </p>
       ) : null}
       <div className="compare-grid">
-        <RunSummaryCard
-          title="Last STATIC run"
-          run={lastStaticRun}
-          emptyHint="No STATIC run recorded yet."
+        <PolicySessionCard
+          title="STATIC (session)"
+          runs={comparison.staticRuns}
+          comparison={comparison}
+          policy="STATIC"
         />
-        <RunSummaryCard
-          title="Last ARIS run"
-          run={lastArisRun}
-          emptyHint="No ARIS run recorded yet."
+        <PolicySessionCard
+          title="ARIS (session)"
+          runs={comparison.arisRuns}
+          comparison={comparison}
+          policy="ARIS"
         />
       </div>
+      <p className="sv-meaning">
+        <strong>What this means:</strong> {meaning}
+      </p>
     </div>
   );
 }

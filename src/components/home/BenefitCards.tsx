@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DockerHubLink } from "@/components/shared/DockerHubLink";
 
 const BENEFITS = [
   {
@@ -37,15 +38,6 @@ export function HomeHero() {
     <section className="home-hero">
       <p className="home-eyebrow">Live product demo</p>
       <h1 className="home-brand">ARIS</h1>
-      <p className="home-headline">
-        When checkout gets busy, fixed retry rules keep knocking the same way —
-        ARIS chooses how long to wait and whether to try again so the same order
-        path stays calmer.
-      </p>
-      <p className="home-support">
-        Watch one customer place-order under STATIC fixed rules versus ARIS —
-        including problems in the order path and the payment path.
-      </p>
       <div className="home-cta-row">
         <Link className="btn btn-primary btn-lg" href="/checkout">
           Try the live demo
@@ -53,6 +45,7 @@ export function HomeHero() {
         <Link className="btn btn-secondary btn-lg btn-on-light" href="/cost">
           See the cost story
         </Link>
+        <DockerHubLink className="docker-hub-link docker-hub-link-hero" />
       </div>
     </section>
   );

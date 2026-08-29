@@ -2,9 +2,9 @@
 
 import { BURST_SIZE } from "@/config/env";
 import { ActiveHeaders } from "@/components/demo/ActiveHeaders";
-import { AuthStatus } from "@/components/demo/AuthStatus";
 import { PolicyToggle } from "@/components/demo/PolicyToggle";
 import { ScenarioSelect } from "@/components/demo/ScenarioSelect";
+import { DockerHubLink } from "@/components/shared/DockerHubLink";
 import { useDemoStore } from "@/lib/store/demoStore";
 
 export function DemoControlBar() {
@@ -53,7 +53,10 @@ export function DemoControlBar() {
           </div>
         </div>
         <ActiveHeaders />
-        <AuthStatus />
+        <div className="demo-control-group docker-hub-control">
+          <span className="demo-control-label">Image</span>
+          <DockerHubLink compact />
+        </div>
       </div>
       {(statusMessage || errorMessage) && (
         <div className="demo-control-messages" aria-live="polite">

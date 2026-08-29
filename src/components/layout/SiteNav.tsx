@@ -41,7 +41,7 @@ export function SiteNav() {
               );
             })}
           </nav>
-          <AuthStatus variant="nav" />
+          <AuthStatus />
         </div>
       </div>
     </header>

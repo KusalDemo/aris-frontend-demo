@@ -57,7 +57,7 @@ export function RunHistoryTable() {
                 const path =
                   run.failureLocation && run.failureLocation !== "NONE"
                     ? String(run.failureLocation)
-                    : "—";
+                    : "-";
                 const rowNum = recentRuns.length - index;
                 return (
                   <tr key={run.id}>

@@ -13,11 +13,18 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { StaticVsArisTable } from "@/components/shared/StaticVsArisTable";
 import {
   computeCostBreakdown,
   formatDemoMoney,
   parseNonNegativeNumber,
 } from "@/lib/demo/cost";
+import {
+  buildCompareBarChartData,
+  buildComparisonTableRows,
+  comparisonMeaning,
+  computeSessionComparison,
+} from "@/lib/demo/sessionPerformance";
 import { useDemoStore } from "@/lib/store/demoStore";
 
 export function StatsCards() {
@@ -173,7 +180,7 @@ export function CostModelControls() {
       </div>
       <p className="panel-hint">
         infraWaste = extraCalls × costPerApiCall · businessLoss = fails ×
-        costPerFailedOrder. Default api call cost is 0.0001 (four decimals) —
+        costPerFailedOrder. Default api call cost is 0.0001 (four decimals) -
         failed-order penalty is a separate dial (default 2.00) and often
         dominates the total.
       </p>
@@ -184,7 +191,7 @@ export function CostModelControls() {
 export function RunsCharts() {
   const hydrated = useDemoStore((s) => s.hydrated);
   const recentRuns = useDemoStore((s) => s.recentRuns);
-  const scenario = useDemoStore((s) => s.scenario);
+  const costConstants = useDemoStore((s) => s.costConstants);
   const runs = hydrated ? recentRuns : [];
 
   const lastN = useMemo(() => {
@@ -200,27 +207,9 @@ export function RunsCharts() {
   }, [runs]);
 
   const compareBars = useMemo(() => {
-    const same = runs.filter((r) => r.scenario === scenario);
-    const staticRuns = same.filter((r) => r.policy === "STATIC");
-    const arisRuns = same.filter((r) => r.policy === "ARIS");
-    const avg = (arr: typeof same, key: "retriesObserved") =>
-      arr.length ? arr.reduce((s, r) => s + r[key], 0) / arr.length : 0;
-    const successRate = (arr: typeof same) =>
-      arr.length ? arr.filter((r) => r.success).length / arr.length : 0;
-
-    return [
-      {
-        name: "Avg retries",
-        STATIC: Number(avg(staticRuns, "retriesObserved").toFixed(2)),
-        ARIS: Number(avg(arisRuns, "retriesObserved").toFixed(2)),
-      },
-      {
-        name: "Success rate",
-        STATIC: Number(successRate(staticRuns).toFixed(2)),
-        ARIS: Number(successRate(arisRuns).toFixed(2)),
-      },
-    ];
-  }, [runs, scenario]);
+    const comparison = computeSessionComparison(runs, costConstants);
+    return buildCompareBarChartData(comparison);
+  }, [runs, costConstants]);
 
   if (!lastN.length) {
     return (
@@ -278,7 +267,7 @@ export function RunsCharts() {
       </div>
 
       <div className="panel chart-panel">
-        <h2 className="panel-title">STATIC vs ARIS (scenario {scenario})</h2>
+        <h2 className="panel-title">STATIC vs ARIS (entire session)</h2>
         <div className="chart-box">
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={compareBars}>
@@ -294,5 +283,29 @@ export function RunsCharts() {
         </div>
       </div>
     </div>
+  );
+}
+
+export function CostCompareTable() {
+  const hydrated = useDemoStore((s) => s.hydrated);
+  const recentRuns = useDemoStore((s) => s.recentRuns);
+  const costConstants = useDemoStore((s) => s.costConstants);
+
+  const { rows, meaning } = useMemo(() => {
+    const runs = hydrated ? recentRuns : [];
+    const comparison = computeSessionComparison(runs, costConstants);
+    return {
+      rows: buildComparisonTableRows(comparison),
+      meaning: comparisonMeaning(comparison),
+    };
+  }, [hydrated, recentRuns, costConstants]);
+
+  return (
+    <StaticVsArisTable
+      title="STATIC vs ARIS numbers (entire session)"
+      hint="Live from this browser session, all scenarios. Same source as the bar chart above."
+      rows={rows}
+      meaning={meaning}
+    />
   );
 }
